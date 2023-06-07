@@ -1,0 +1,36 @@
+.div-form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid white;
+    align-items: center;
+    justify-content: center;
+}
+.label-edicao{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 800px;
+}
+.btn-editar{
+    height: 50px;
+    width: 150px;
+}
+.text-area-edit{
+    background-color: gray;
+    border: none;
+    color: white;
+    width: 800px;
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

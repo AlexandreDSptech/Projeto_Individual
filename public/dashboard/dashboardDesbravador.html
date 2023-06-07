@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Dashboard</title>
+    <link rel="stylesheet" href="../css/styleMural.css">
+    <script src="../js/funcoes.js"></script>
+    <script src="notificacao.js"></script>
+</head>
+<body onload="carregarClasse(), carregarEspecialidade()">
+    <div class="janela">
+        <div class="barra-lateral">
+            <span class="titulos">Project Pathfindercization</span>
+            <div class="hello">
+                <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
+            </div>
+            <div id="trocaBarra1" class="btn-nav-white click">
+                <a class="trocaPagina" href="dashboardDesbravador.html">
+                    <h3>Classes/Especialidades</h3>
+                </a>
+            </div>
+            <div id="trocaBarra2" class="btn-nav-white click">
+                <a class="trocaPagina" href="graficosDesbravador.html">
+                    <h3>Gráficos</h3>
+                </a>
+            </div>
+            <div class="btn-nav click">
+                <a class="trocaPagina" href="mural.html">
+                    <h3>Mural de Avisos</h3>
+                </a>
+            </div>
+            <div class="btn-logout click" onclick="limparSessao()">
+                <h3>Sair</h3>
+            </div>
+        </div>
+        <div class="dash-right">
+            <div id="mensagem_notificacao" class="msn-not">
+                <!-- Mensagem Notificação -->
+            </div>
+            <div class="avisos">
+                <div class="container">
+                    <div id="aparecerInputClasse">
+                        <button class="btn-dvb" onclick="chamarClasse()">
+                            Insira Classe
+                        </button>
+                        <button class="btn-dvb" onclick="chamarEspecialidade()">
+                            Insira Especilidade
+                        </button>
+                        <button class="btn-dvb" onclick="chamarClasseDeletar()">
+                            Deletar Classe
+                        </button>
+                        <button class="btn-dvb" onclick="chamarEspecialidadeDeletar()">
+                            Deletar Especialidade
+                        </button>
+                    </div>
+                    <div class="div-classes">
+                        <span class="titulos">Classes</span>
+                        <div class="box-classes">
+                            <table cellspacing="0" border="1" class="table-classe" id="mensagem_table_lista">
+                                <tr>
+                                    <td id="td0" class="td-classe "></td>
+                                    <td id="td2" class="td-classe "></td>
+                                    <td id="td4" class="td-classe "></td>
+                                    <td id="td6" class="td-classe "></td>
+                                    <td id="td8" class="td-classe "></td>
+                                    <td id="td10" class="td-classe "></td>
+                                </tr>
+                                <tr>
+                                    <td id="td1" class="td-classe "></td>
+                                    <td id="td3" class="td-classe "></td>
+                                    <td id="td5" class="td-classe "></td>
+                                    <td id="td7" class="td-classe "></td>
+                                    <td id="td9" class="td-classe "></td>
+                                    <td id="td11" class="td-classe "></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="div-classes">
+                        <span class="titulos">Especialidades</span>
+                        <div class="box-classes">
+                            <table cellspacing="0" border="1" class="table-classe" id="mensagem_table_lista_Especialidade">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
+    function chamarClasse() {
+        aparecerInputClasse.innerHTML = `
+        <span>Nome da Classe:</span> <select name="selectClasse" class="input-classe" id="input_classe">
+            <option value="Amigo">Amigo</option>
+            <option value="Amigo da Natureza">Amigo da Natureza</option>
+            <option value="Companheiro">Companheiro</option>
+            <option value="Companheiro de Excursionismo">Companheiro de Excursionismo</option>
+            <option value="Pesquisador">Pesquisador</option>
+            <option value="Pesquisador de Campo e Bosque">Pesquisador de Campo e Bosque</option>
+            <option value="Pioneiro">Pioneiro</option>
+            <option value="Pioneiro de Novas Fronteiras">Pioneiro de Novas Fronteiras</option>
+            <option value="Excursionista">Excursionista</option>
+            <option value="Excursionista na Mata">Excursionista na Mata</option>
+            <option value="Guia">Guia</option>
+            <option value="Guia de Exploração">Guia de Exploração</option>
+        </select>
+        <button class="btn-dvb" onclick="buscarClasse()">Cadastrar</button>
+        <button class="btn-dvb" onclick="Voltar()">Voltar</button>
+        `;
+    }
+    function chamarEspecialidade() {   
+        aparecerInputClasse.innerHTML = `
+        <span>Nome da Especialidade:</span> <input id="input_especialidade" class="input-classe"/>
+        <button class="btn-dvb" onclick="buscarEspecialidade()">Cadastrar</button>
+        <button class="btn-dvb" onclick="Voltar()">Voltar</button>
+        `;
+    }
+    function chamarClasseDeletar() {   
+        aparecerInputClasse.innerHTML = `
+        <span>Nome da Classe:</span> <select name="selectClasse" class="input-classe" id="input_classe_deletar">
+            <option value="Amigo">Amigo</option>
+            <option value="Amigo da Natureza">Amigo da Natureza</option>
+            <option value="Companheiro">Companheiro</option>
+            <option value="Companheiro de Excursionismo">Companheiro de Excursionismo</option>
+            <option value="Pesquisador">Pesquisador</option>
+            <option value="Pesquisador de Campo e Bosque">Pesquisador de Campo e Bosque</option>
+            <option value="Pioneiro">Pioneiro</option>
+            <option value="Pioneiro de Novas Fronteiras">Pioneiro de Novas Fronteiras</option>
+            <option value="Excursionista">Excursionista</option>
+            <option value="Excursionista na Mata">Excursionista na Mata</option>
+            <option value="Guia">Guia</option>
+            <option value="Guia de Exploração">Guia de Exploração</option>
+        </select>
+        <button class="btn-dvb" onclick="buscarClasseDeletar()">Deletar</button>
+        <button class="btn-dvb" onclick="Voltar()">Voltar</button>
+        `;
+    }
+    function chamarEspecialidadeDeletar() {   
+        aparecerInputClasse.innerHTML = `
+        <span>Nome da Especialidade:</span> <input id="input_especialidade_deletar" class="input-classe"/>
+        <button class="btn-dvb" onclick="buscarEspecialidadeDeletar()">Deletar</button>
+        <button class="btn-dvb" onclick="Voltar()">Voltar</button>
+        `;
+    }
+    function Voltar() {
+        aparecerInputClasse.innerHTML = `
+            <button class="btn-dvb" onclick="chamarClasse()">
+                Insira Classe
+            </button>
+            <button class="btn-dvb" onclick="chamarEspecialidade()">
+                Insira Especilidade
+            </button>
+            <button class="btn-dvb" onclick="chamarClasseDeletar()">
+                Deletar Classe
+            </button>
+            <button class="btn-dvb" onclick="chamarEspecialidadeDeletar()">
+                Deletar Especialidade
+            </button>
+        `;
+    }
+    var idBuscarClasse = 0;
+    function buscarClasse() {
+        var nomeVar = input_classe.value;
+        fetch("/dashdvb/buscarClasse", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    idBuscarClasse = json[0].idClasse;                    
+                });
+                setTimeout(() => {
+                    SetarPastaClasse();
+                    setTimeout(() => {
+                        window.location = "dashboardDesbravador.html";
+                    }, "1000")
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function SetarPastaClasse() {
+        var fkDvbVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/SetarPastaClasse", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDvbServer: fkDvbVar,
+                fkClasseServer: idBuscarClasse
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                });
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var vetorClasse = ['Amigo','Amigo da Natureza','Companheiro','Companheiro de Excursionismo','Pesquisador','Pesquisador de Campo e Bosque','Pioneiro','Pioneiro de Novas Fronteiras','Excursionista','Excursionista na Mata','Guia','Guia de Exploração']
+    var vetorClasseClass = ['amigo','amigo','companheiro','companheiro','pesquisador','pesquisador','pioneiro','pioneiro','excursionista','excursionista','guia','guia']
+    function carregarClasse() {
+        var fkDvbVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/carregarClasse", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDvbServer: fkDvbVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    // console.log(json[0].nomeClasse)
+                    for (let i = 0; i < json.length; i++) {
+                        var procuraVetor = vetorClasse.indexOf(json[i].nomeClasse);
+                        if (procuraVetor >= 0) {
+                            var classeNome = document.getElementById(`td${procuraVetor}`)
+                            classeNome.innerHTML = vetorClasse[vetorClasse.indexOf(json[i].nomeClasse)];
+                            classeNome.className += vetorClasseClass[vetorClasse.indexOf(json[i].nomeClasse)];
+                        }
+                    }
+                });
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var idBuscarEspecialidade = 0;
+    function buscarEspecialidade() {
+        var nomeVar = input_especialidade.value;
+        fetch("/dashdvb/buscarEspecialidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    idBuscarEspecialidade = json[0].idEspecialidade;
+                });
+                setTimeout(() => {
+                    SetarPastaEspecialidade();
+                    setTimeout(() => {
+                        window.location = "dashboardDesbravador.html";
+                    }, "1000")
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function SetarPastaEspecialidade() {
+        var fkDvbVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/SetarPastaEspecialidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDvbServer: fkDvbVar,
+                fkEspecialidadeServer: idBuscarEspecialidade
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                });
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var categoria_especialidade = ['ADRA', 'Artes e Habilidades Manuais', 'Atividades Agrícolas', 'Missionárias e Comunitárias','Atividades Profissionais','Atividades Recreativas','Ciência e Saúde','Estudos da Natureza','Habilidades Domésticas','Mestrados']
+    var vetor_cor = [' adra',' artes',' agricolas',' missionarias',' profissionais',' recreativas',' ciencia',' natureza',' domesticas',' mestrados']
+    function carregarEspecialidade() {
+        var fkDvbVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/carregarEspecialidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDvbServer: fkDvbVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    // console.log(json[0].nomeEspecialidade);
+                    for (let i = 0; i < json.length; i++) {
+                        var table = document.getElementById('mensagem_table_lista_Especialidade');
+                        if (i == 0 || i % 6 == 0) {
+                            var tr = document.createElement("tr");
+                            table.appendChild(tr);
+                        }
+                        var td = document.createElement("td");
+                        td.innerHTML = json[i].nomeEspecialidade;
+                        td.className = "td-especialidade";
+                        
+                        var posição = categoria_especialidade.indexOf(json[i].categoria);
+                        td.className += vetor_cor[posição];
+                        tr.appendChild(td);
+                    }
+                });
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var idBuscarClasseDeletar = 0;
+    function buscarClasseDeletar() {
+        var nomeVar = input_classe_deletar.value;
+        fetch("/dashdvb/buscarClasseDeletar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    idBuscarClasseDeletar = json[0].idClasse;
+                });
+                setTimeout(() => {
+                    DeletarPastaClasse();
+                    setTimeout(() => {
+                        window.location = "dashboardDesbravador.html";
+                    }, "1000")
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var idBuscarEspecialidadeDeletar = 0;
+    function buscarEspecialidadeDeletar() {
+        var nomeVar = input_especialidade_deletar.value;
+        fetch("/dashdvb/buscarEspecialidadeDeletar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    idBuscarEspecialidadeDeletar = json[0].idEspecialidade;                    
+                });
+                setTimeout(() => {
+                    DeletarPastaEspecialidade();
+                    setTimeout(() => {
+                        window.location = "dashboardDesbravador.html";
+                    }, "1000")
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function DeletarPastaClasse() {
+        var fkDvbVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/DeletarPastaClasse", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDvbServer: fkDvbVar,
+                fkClasseServer: idBuscarClasseDeletar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                });
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function DeletarPastaEspecialidade() {
+        var fkDvbVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/DeletarPastaEspecialidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDvbServer: fkDvbVar,
+                fkEspecialidadeServer: idBuscarEspecialidadeDeletar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                });
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+</script>

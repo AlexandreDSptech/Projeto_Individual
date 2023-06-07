@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Avisos</title>
+    <link rel="stylesheet" href="../css/styleMural.css">
+    <script src="../js/funcoes.js"></script>
+    <script src="notificacao.js"></script>
+</head>
+<body onload="validarSessao(), atualizarFeed(), CarregarJoinConvite(), CarregarEndereco(), atualizarNotificação()" style="background-color: #161618;">
+    <!-- <div class="conviteUP"></div> -->
+    <div class="janela">
+        <div class="barra-lateral">
+            <span class="titulos">Project Pathfindercization</span>
+            <div class="hello">
+                <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
+            </div>
+            <div id="trocaBarra1" class="btn-nav-white click">
+                <a class="trocaPagina" href="DashboardClube.html">
+                    <h3>Unidades</h3>
+                </a>
+            </div>
+            <div id="trocaBarra2" class="btn-nav-white click">
+                <a class="trocaPagina" href="./graficos.html">
+                    <h3>Gráficos</h3>
+                </a>
+            </div>
+            <div class="btn-nav click">
+                <a class="trocaPagina" href="./mural.html">
+                    <h3>Mural de Avisos</h3>
+                </a>
+            </div>
+            <div class="btn-logout click" onclick="limparSessao()">
+                <h3>Sair</h3>
+            </div>
+        </div>
+        <div class="dash-right">
+            <div class="avisos">
+                <div class="container">
+                    <div id="mensagem_hora">
+
+                    </div>
+                    <div id="mensagem_convite">
+                        <!-- Mensagem que aparece caso tenha um convite -->
+                    </div>
+                    <span class="titulos" id="titulo_aviso"></span>
+                    <div class="div-form" id="div_aviso_form">
+                        
+                    </div>
+                    <h1>Mural de Avisos</h1>
+                    <div class="div-results">
+                        <div id="feed_container" class="feed-container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    function verificarIdade(dataNascimento) {
+        // Dividir a data de nascimento em dia, mês e ano
+        var partesData = dataNascimento.split('/');
+        var diaNascimento = parseInt(partesData[0], 10);
+        var mesNascimento = parseInt(partesData[1], 10);
+        var anoNascimento = parseInt(partesData[2], 10);   
+        // Obter a data atual
+        var dataAtual = new Date();
+        // Definir a data de nascimento da pessoa
+        var dataNasc = new Date(anoNascimento, mesNascimento - 1, diaNascimento);
+        // Calcular a diferença entre a data atual e a data de nascimento em milissegundos
+        var diferencaMilissegundos = dataAtual - dataNasc;
+        // Converter a diferença em anos
+        var idade = Math.floor(diferencaMilissegundos / 31557600000); // Aproximadamente o número de milissegundos em um ano
+        // Verificar se a pessoa tem 16 anos ou mais
+        return idade >= 16;
+    }
+
+    // Exemplo de uso
+    var dataNascimento = `${sessionStorage.DTNASC}`;
+    var VerificaLider = verificarIdade(dataNascimento);
+    console.log(VerificaLider);
+    if (VerificaLider == true) {
+        updateLenco();
+    }
+    function updateLenco() {
+        var idDesbravadorVar = sessionStorage.ID_DESBRAVADOR;
+        if (idDesbravadorVar != 0) {
+                fetch("/avisos/updateLenco", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idDesbravadorServer: idDesbravadorVar
+                })
+            }).then(function (resposta) {
+                console.log("resposta: ", resposta);
+                if (resposta.ok) {
+                    resposta.json().then(json => {
+                        console.log(json);
+                        console.log("TESTE: " + JSON.stringify(json));
+                    });
+                } else {
+                    throw ("Houve um erro ao tentar buscar os dados!");
+                }
+            }).catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+            });
+            return false;
+        }
+    }
+    var nomeClube = "";
+    if (sessionStorage.ID_DESBRAVADOR != 0) {
+        trocaBarra1.innerHTML = `
+            <a class="trocaPagina" href="dashboardDesbravador.html">
+                <h3>Classes/Especialidades</h3>
+            </a>
+        `;
+        trocaBarra2.innerHTML = `
+            <a class="trocaPagina" href="graficosDesbravador.html">
+                <h3>Gráficos</h3>
+            </a>
+        `;
+    }
+    function CarregarJoinConvite() {
+        var conviteVar = sessionStorage.CONVITE;
+        fetch("/avisos/CarregarJoinConvite", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                conviteServer: conviteVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    nomeClube = json[0].nome;
+                    var convite = sessionStorage.CONVITE;
+                    if (convite != 'null' && convite != '0' && sessionStorage.ID_DESBRAVADOR != 0) {
+                        alert('Você tem um convite!')
+                        mensagem_convite.innerHTML = `
+                            <span class="titulos">Você tem um convite do clube ${nomeClube}</span>
+                            <div class="divBtnConvites">
+                                <button class="btn-convite" onclick="Aceitar()">Aceitar</button>
+                                <button class="btn-convite" onclick="Recusar()">Recusar</button>
+                            </div>
+                        `;
+                    }
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function Aceitar() {
+        var conviteVar = sessionStorage.CONVITE;
+        var emailVar = sessionStorage.EMAIL_USUARIO;
+        fetch("/avisos/Aceitar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                conviteServer: conviteVar,
+                emailServer: emailVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    limparSessao();
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function Recusar() {
+        var emailVar = sessionStorage.EMAIL_USUARIO;
+        fetch("/avisos/Recusar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    limparSessao();
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var lenço_aviso = sessionStorage.NÍVEL_LENÇO;
+    var idClubeSession = sessionStorage.ID_CLUBE
+    if (lenço_aviso != "C" && idClubeSession != 'null' || dClubeSession != 'null') {
+
+        titulo_aviso.innerHTML = "Publicar um aviso";
+        div_aviso_form.innerHTML = `
+            <div class="divAviso" id="form_postagem">
+                <label>
+                    Título:
+                    <br/>
+                    <input class="inputAviso" name="titulo" id="titulo" maxlength="100" type="text"/>
+                </label>
+                <br/>
+                <label>
+                    Descrição (máximo de 300 caracteres):
+                    <br/>
+                    <textarea class="inputAviso" name="descricao" id="textarea_descricao" maxlength="250" rows="5"></textarea>
+                </label>
+                <br/>
+                <button class="btnAviso" onclick="VerificaPubli()">Enviar</button>
+            </div>
+        `
+    }
+
+    function VerificaPubli() {
+        if (sessionStorage.ID_DESBRAVADOR == 0) {
+            publicarClube();
+        } else {
+            publicar();
+        }
+    }
+
+    b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
+    function limparFormulario() {
+        // document.getElementById("form_postagem").reset();
+    }
+    function publicar() {
+        var idUsuario = sessionStorage.ID_DESBRAVADOR;
+        var idClube = sessionStorage.ID_CLUBE;
+        var corpo = {
+            titulo: titulo.value,
+            descricao: textarea_descricao.value,
+            idClubeServer: idClube
+        }
+        fetch(`/avisos/publicar/${idUsuario}`, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(corpo)
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                window.alert("Post realizado com sucesso pelo usuario: " + sessionStorage.NOME_USUARIO + "!");
+                window.location = "/dashboard/mural.html";
+                // limparFormulario();
+                // finalizarAguardar();
+            } else if (resposta.status == 404) {
+                window.alert("Deu 404!");
+            } else {
+                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+            finalizarAguardar();
+        });
+        // return false;
+    }
+
+    function publicarClube() {
+        var idUsuario = sessionStorage.ID_CLUBE;
+        var corpo = {
+        titulo: titulo.value,
+            descricao: textarea_descricao.value
+        }
+        fetch(`/avisos/publicarClube/${idUsuario}`, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(corpo)
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                window.alert("Post realizado com sucesso pelo usuario: " + sessionStorage.NOME_USUARIO + "!");
+                window.location = "/dashboard/mural.html";
+                // window.location = "/dashboard/mural.html";
+                // limparFormulario();
+                // finalizarAguardar();
+            } else if (resposta.status == 404) {
+                window.alert("Deu 404!");
+            } else {
+                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+            // finalizarAguardar();
+        });
+        // return false;
+    }
+
+    function editar(idAviso) {
+        sessionStorage.ID_POSTAGEM_EDITANDO = idAviso;
+        console.log("cliquei em editar - " + idAviso);
+        window.alert("Você será redirecionado à página de edição do aviso de id número: " + idAviso);
+        window.location = "/dashboard/edicao-aviso.html"
+    }
+    function deletar(idAviso) {
+        console.log("Criar função de apagar post escolhido - ID" + idAviso);
+        fetch(`/avisos/deletar/${idAviso}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (resposta) {
+            if (resposta.ok) {
+                window.alert("Post deletado com sucesso pelo usuario de email: " + sessionStorage.getItem("EMAIL_USUARIO") + "!");
+                window.location = "/dashboard/mural.html"
+            } else if (resposta.status == 404) {
+                window.alert("Deu 404!");
+            } else {
+                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+    }
+    function atualizarFeed() {
+        //aguardar();
+        fetch("/avisos/listar").then(function (resposta) {
+            if (resposta.ok) {
+                if (resposta.status == 204) {
+                    var feed = document.getElementById("feed_container");
+                    var mensagem = document.createElement("span");
+                    mensagem.innerHTML = "Nenhum resultado encontrado."
+                    feed.appendChild(mensagem);
+                    throw "Nenhum resultado encontrado!!";
+                }
+                resposta.json().then(function (resposta) {
+                    console.log("Dados recebidos: ", JSON.stringify(resposta));
+                    var feed = document.getElementById("feed_container");
+                    feed.innerHTML = "";
+                    var idClubeSession = sessionStorage.ID_CLUBE;
+                    var idDesbravadorSession = sessionStorage.ID_DESBRAVADOR;
+                    if (idClubeSession != 0 || idClubeSession != 'null') {
+                        for (let i = 0; i < resposta.length; i++) {
+                            var idClube = resposta[i].fkClubeAviso; // pega fk
+                            //var idClubeVar = (resposta[i].idUsuarioClube); // pega idclube
+                            if(idClubeSession == idClube) {
+                                var idDesbravador = resposta[i].fkDesbravadorAviso; // pega fk
+                                var publicacao = resposta[i];
+                                // criando e manipulando elementos do HTML via JavaScript
+                                var divPublicacao = document.createElement("div");
+                                var spanHora = document.createElement("span");
+                                var spanTitulo = document.createElement("span");
+                                var spanNome = document.createElement("span");
+                                var divDescricao = document.createElement("div");
+                                var divButtons = document.createElement("div");
+
+                                var hora = new Date(publicacao.dtHora).toLocaleString("pt-BR")
+
+                                spanHora.innerHTML = "<span class='titulosAviso'>Hora:</span> <b>" + hora + "</b>";
+                                spanTitulo.innerHTML = "<span class='titulosAviso'>Título:</span> <b>" + publicacao.titulo + "</b>";
+                                if (idDesbravador != 0 && idDesbravador != null) {
+                                    spanNome.innerHTML = "<span class='titulosAviso'>Autor:</span> <b>" + publicacao.nome + "</b>";
+                                } else {
+                                    spanNome.innerHTML = "<span class='titulosAviso'>Autor:</span> <b>" + publicacao.nomeClube + "</b>";
+                                }
+                                divDescricao.innerHTML = "<span class='titulosAviso'>Descrição:</span> <b>" + publicacao.descricao + "</b>";
+                                if (lenço_aviso != "C" && idDesbravadorSession == idDesbravador || idDesbravadorSession == 0) {
+                                    var btnEditar = document.createElement("button");
+                                    var btnDeletar = document.createElement("button");
+                                    btnEditar.innerHTML = "Editar";
+                                    btnDeletar.innerHTML = "Deletar";
+                                }
+                                divPublicacao.className = "publicacao";
+                                spanHora.className = "marginAviso"
+                                spanTitulo.id = "inputNumero" + publicacao.idAviso;
+                                spanNome.className = "publicacao-nome marginAviso";
+                                spanTitulo.className = "publicacao-titulo marginAviso";
+                                divDescricao.className = "publicacao-descricao marginAviso";
+                                divButtons.className = "div-buttons marginAviso"
+                                if (lenço_aviso != "C" && idDesbravadorSession == idDesbravador || idDesbravadorSession == 0) {
+                                    btnEditar.className = "publicacao-btn-editar"
+                                    btnEditar.id = "btnEditar" + publicacao.idAviso;
+                                    btnEditar.setAttribute("onclick", `editar(${publicacao.idAviso})`);
+                                    btnDeletar.className = "publicacao-btn-editar"
+                                    btnDeletar.id = "btnDeletar" + publicacao.idAviso;
+                                    btnDeletar.setAttribute("onclick", `deletar(${publicacao.idAviso})`);
+                                }
+                                divPublicacao.appendChild(spanHora);
+                                divPublicacao.appendChild(spanNome);
+                                divPublicacao.appendChild(spanTitulo);
+                                divPublicacao.appendChild(divDescricao);
+                                divPublicacao.appendChild(divButtons);
+                                if (lenço_aviso != "C" && idDesbravadorSession == idDesbravador || idDesbravadorSession == 0) {
+                                    divButtons.appendChild(btnEditar);
+                                    divButtons.appendChild(btnDeletar);
+                                }
+                                feed.appendChild(divPublicacao);
+                            }
+                        }
+                    }
+                    finalizarAguardar();
+                });
+            } else {
+                throw ('Houve um erro na API!');
+            }
+        }).catch(function (resposta) {
+            console.error(resposta);
+            finalizarAguardar();
+        });
+    }
+    function testar() {
+        aguardar();
+        var formulario = new URLSearchParams(new FormData(document.getElementById("form_postagem")));
+        var divResultado = document.getElementById("div_feed");
+
+        divResultado.appendChild(document.createTextNode(formulario.get("descricao")));
+        divResultado.innerHTML = formulario.get("descricao");
+
+        finalizarAguardar();
+        return false;
+    }
+
+    function Mostra_Hora() {
+      // [6]
+        var NomeDia = ["Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado"];
+        
+      // [11]
+        var NomeMes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        
+        var NomeSaudacao = ["Bom dia", "Boa tarde", "Boa noite", "Boa madrugada"]
+
+        Data1 = new Date();
+        var h = Data1.getHours();
+        var m = Data1.getMinutes();
+        var s = Data1.getSeconds();
+        var dia = Data1.getDate();
+        var dias = Data1.getDay();
+        var mes = Data1.getMonth();
+        var ano = Data1.getYear();
+
+      /*
+      Para ano maior ou igual a 2000, o valor retornado por getYear() é 100 ou mais. Por exemplo, se o ano for 2026, getYear() retorna 126.
+      Para ano entre e incluindo 1900 e 1999, o valor retornado por getYear() é entre 0 e 99. Por exemplo, se o anor for 1976, getYear() retorna 76.
+      Para ano menor que 1900, o valor retornado por getYear() é menor que 0. Por exemplo, se o ano for 1800, getYear() retorna -100.
+      JavaScript é retardado, wtf qual o sentido disso
+      */
+        if (ano < 1000) {
+          ano = ano + 1900;
+        }
+        // Caso hora, minuto ou segundo seja menor que 10 ele irá adicionar um 0 antes, para ficar com dois digitos
+        if (h < 10) {
+          h = "0" + h;
+        }
+        if (m < 10) {
+          m = "0" + m;
+        }
+        if (s < 10) {
+          s = "0" + s;
+        }
+        
+        var cidade = sessionStorage.CIDADE;
+        if (h >= 6 && h < 12) {
+          NomeSaudacao = NomeSaudacao[0]
+          mensagem_hora.innerHTML = `<h2>${cidade}, ${NomeDia[dias]}, ${dia} de ${NomeMes[mes]} de ${ano}. ${NomeSaudacao}! ${h}:${m}:${s}</h2>`;
+        } else if (h >= 12 && h < 18) {
+          NomeSaudacao = NomeSaudacao[1]
+          mensagem_hora.innerHTML = `<h2>${cidade}, ${NomeDia[dias]}, ${dia} de ${NomeMes[mes]} de ${ano}. ${NomeSaudacao}! ${h}:${m}:${s}</h2>`;
+        } else if (h >= 18 && h < 24) {
+          NomeSaudacao = NomeSaudacao[2]
+          mensagem_hora.innerHTML = `<h2>${cidade}, ${NomeDia[dias]}, ${dia} de ${NomeMes[mes]} de ${ano}. ${NomeSaudacao}! ${h}:${m}:${s}</h2>`;
+        } else if (h >= 0 && h < 6) {
+          NomeSaudacao = NomeSaudacao[3]
+          mensagem_hora.innerHTML = `<h2>${cidade}, ${NomeDia[dias]}, ${dia} de ${NomeMes[mes]} de ${ano}. ${NomeSaudacao}! ${h}:${m}:${s}</h2>`;
+        }
+    }
+
+    setInterval(() => {
+            Mostra_Hora();
+            atualizarFeed();
+        }, 1000);
+
+    function CarregarEndereco() {
+        var fkEndVar = sessionStorage.FK_END;
+        fetch("/avisos/CarregarEndereco", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkEndServer: fkEndVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    sessionStorage.CIDADE = json[0].cidade;
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+
+        return false;
+    }
+    function atualizarNotificação() {
+        var idDesbravadorVar = sessionStorage.ID_DESBRAVADOR;
+        var idClubeVar = sessionStorage.ID_CLUBE;
+        if (idDesbravadorVar == 0) {
+            fetch("/avisos/atualizarNotificacaoClube", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idClubeServer: idClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+        } else {
+            fetch("/avisos/atualizarNotificacaoDesbravador", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idDesbravadorServer: idDesbravadorVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+        }
+    }
+</script>

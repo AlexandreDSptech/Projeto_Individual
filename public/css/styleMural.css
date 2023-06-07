@@ -1,0 +1,364 @@
+body{
+    margin: 0;
+    background-color: #161618;
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+.janela{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.titulos{
+    font-size: 32px;
+    font-weight: bold;
+}
+.barra-lateral{
+    height: 720px;
+    width: 300px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: fixed;
+}
+.dash-right{
+    width: 80%;
+    margin-left: 20%;
+    color: white;
+}
+.avisos{
+    display: flex;
+    justify-content: center;
+}
+.container{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Início estilização Dashboard Clube */
+
+.area-dash{
+    margin-left: 27%;
+    margin-top: 1%;
+    width: 100%;
+    height: fit-content;
+}
+.mostra_unidades{
+    color: white;
+}
+.linha{
+    width: 90%;
+    border: 1px solid black;
+    background-color: darkgray;
+    height: 100px;
+    margin-bottom: 50px;
+}
+.area-dash-kpi{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+}
+.LinhasKPI{
+    width: 80%;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+}
+.box-kpi{
+    height: 80px;
+    width: fit-content;
+    background-color: gray;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    margin-left: 50%;
+    text-align: center;
+}
+.linha-kpi{
+    width: 100%;
+    border-bottom: 1px solid white;
+}
+.LinhaGrafico{
+    width: 80%;
+    height: 513px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.box-grafico{
+    color: white;
+    background-color: gray;
+    border-radius: 20px;
+}
+.grafico-rosca{
+    height: 300px;
+    width: 300px;
+}
+button{
+    color: white;
+    background-color: gold;
+    transition-duration: 1s;
+    cursor: pointer;
+    border: none;
+}
+button:hover{
+    color: gold;
+    background-color: white;
+    transition-duration: 1s;
+}
+button:active{
+    transform: translateY(8px);
+}
+.trocaPagina{
+    text-decoration: none;
+    color: white;
+}
+
+.trocaPagina:hover{
+    color: gold;
+}
+.click{
+    border: 1px solid black;
+    border-radius: 20px;
+    margin-bottom: 50px;
+    height: 50px;
+    width: 80%;
+    color: white;
+    background-color: gold;
+    transition-duration: 1s;
+}
+.click:hover{
+    cursor: pointer;
+    color: gold;
+    background-color: white;
+    transition-duration: 1s;
+}
+.div-form{
+    width: 100%;
+}
+.divAviso{
+    width: 100%;
+}
+.inputAviso{
+    background-color: gray;
+    border: none;
+    color: white;
+    width: 100%;
+}
+.btnAviso{
+    height: 50px;
+    width: 150px;
+    font-size: 18px;
+}
+.div-results{
+    height: fit-content;
+    width: 100%;
+}
+
+.feed-container{
+    height: fit-content;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.publicacao{
+    background-color: gray;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+}
+.marginAviso{
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+.titulosAviso{
+    color: gold;
+}
+.publicacao-descricao{
+    display: flex;
+}
+.publicacao-btn-editar{
+    margin-left: 20px;
+    height: 40px;
+    width: 80px;
+    font-size: 16px;
+    border-radius: 10px;
+}
+#listar_desbravadores{
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.table_lista{
+    color: white;
+    width: 80%;
+    text-align: center;
+    margin-bottom: 50px;
+}
+.branco{
+    color: white;
+}
+#criar_input{
+    margin-bottom: 40px;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    color: white;
+}
+#criar_input input{
+    background-color: gray;
+    color: white;
+}
+.btn_actions{
+    height: 60px;
+    width: 150px;
+    font-size: 16px;
+}
+.div-classes{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.box-classes{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 80%;
+    border: 1px;
+}
+.table-classe{
+    height: 120px;
+    /* width: 100%; */
+    border-color: white;
+    text-align: center;
+}
+.td-classe{
+    height: 60px;
+    width: 240px;
+}
+.amigo{
+    background-color: blue;
+}
+.companheiro{
+    background-color: red;
+}
+.pesquisador{
+    background-color: green;
+}
+.pioneiro{
+    background-color: gray;
+}
+.excursionista{
+    background-color: purple;
+}
+.guia{
+    background-color: gold;
+}
+.btn-dvb{
+    margin-top: 20px;
+    height: 50px;
+    width: 170px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+.input-classe{
+    border: none;
+    background-color: gray;
+    color: white;
+    height: 30px;
+}
+.td-especialidade{
+    height: 10px;
+    width: 140px;
+}
+.div-info{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    background-color: gray;
+    align-items: center;
+    color: white;
+    margin-bottom: 40px;
+    height: fit-content;
+}
+.msn-not{
+    display: none;
+    position: absolute;
+    right: 5%;
+    top: 10%;
+    background-color: rgba(255, 0, 0, 0.5);
+    text-align: center;
+    height: 30px;
+    width: 160px;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+}
+.adra{
+    background-color: #660066;
+}
+.artes{
+    background-color: cyan;
+}
+.agricolas{
+    background-color: #996633;
+}
+.missionarias{
+    background-color: blue;
+}
+.profissionais{
+    background-color: red;
+}
+.recreativas{
+    background-color: greenyellow;
+}
+.ciencia{
+    background-color: purple;
+}
+.natureza{
+    background-color: white;
+    color: black;
+}
+.domesticas{
+    background-color: gold;
+}
+.mestrados{
+    background-color: gray;
+}
+.grafico-especialidade{
+    height: 400px;
+    width: 400px;
+}
+.divBtnConvites{
+    text-align: center;
+}
+.btn-convite{
+    height: 50px;
+    width: 130px;
+    font-size: 20px;
+}

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Cadastro</title>
+    <script src="./js/funcoes.js"></script>
+    <link rel="stylesheet" href="css/styleCadastro.css">
+</head>
+<body>
+    <!-- Começo do Header -->
+    <header class="header">
+        <span class="titulos">Project Pathfindercization</span>
+        <ul class="BarraSuperior">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sobreMim.html">Sobre Mim</a></li>
+            <li>|</li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="cadastroClube.html">Cadastrar Clube</a></li>
+        </ul>
+    </header>
+    <!-- Fim do Header -->
+    <!-- Começo do Conteiner de Login -->
+    <div class="alerta_erro">
+        <div class="card_erro" id="cardErro">
+            <span id="mensagem_erro"></span>
+        </div>
+    </div>
+    <div class="login">
+        <div class="container">
+            <div class="card">
+                <span class="titulos">Bem Vindo!</span>
+                <div class="formulario">
+                    <div class="campo">
+                        <span>Nome:</span>
+                        <input id="nome_input" type="text" placeholder="Seu nome"/>
+                    </div>
+                    <div class="campo">
+                        <span>E-mail:</span>
+                        <input id="email_input" type="text" placeholder="meuemail@provedor.com"/>
+                    </div>
+                    <div class="campo">
+                        <span>Senha:</span>
+                        <input id="senha_input" type="password" placeholder="******"/>
+                    </div>
+                    <div class="campo">
+                        <span>Confirmação da Senha:</span>
+                        <input id="confirmacao_senha_input" type="password" placeholder="******"/>
+                    </div>
+                    <div class="campo">
+                        <span>Cpf:</span>
+                        <input id="cpf_input" type="text" placeholder="Seu cpf"/>
+                    </div>
+                    <div class="campo">
+                        <span>Data de Nascimento</span>
+                        <input id="nasc_input" type="date"/>
+                    </div>
+                    <div class="campo">
+                        <span>Nível Lenço:</span>
+                        <select id="lenço_input" class="select_lenço">
+                            <option value="C">Normal</option>
+                            <option value="D">Liderança</option>
+                            <option value="L">Líder</option>
+                            <option value="M">Líder Master</option>
+                            <option value="A">Líder Master Avançado</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <span>Cargo:</span>
+                        <input id="cargo_input" type="text" placeholder="Seu cargo na Unidade/Clube/Associação"/>
+                    </div>
+                    <!-- <div class="campo">
+                        <span>Código co seu Clube:</span>
+                        <input id="clube_input" type="text" placeholder="Código do seu clbue"/>
+                    </div>
+                    <div class="campo">
+                        <span>Código da sua Unidade:</span>
+                        <input id="unidade_input" type="text" placeholder="Código da sua Unidade"/>
+                    </div> -->
+                    <div class="campo">
+                        <span>Código do seu Endereço:</span>
+                        <input id="endereço_input" type="text" placeholder="Código do seu Endereço"/>
+                    </div>
+                    <div class="campo">
+                        <span>Código do seu Líder</span>
+                        <input id="lider_input" type="text" placeholder="Código do seu Líder"/>
+                    </div>
+                    <div class="duvida_cadastro">
+                        <span>Já tem uma conta?<a href="login.html">Entrar.</a></span>
+                        <span>Cadastrar um Clube?<a href="cadastroClube.html">Cadastrar.</a></span>
+                    </div>
+                    <button class="botao" onclick="cadastrarDesbravador()">Cadastrar</button>
+                </div>
+            </div>
+            <div class="card_imagem">
+                <img class="imagem_login" src="img/img13.jpg" alt="Imagem de um Desbravador"/>
+                <div id="div_aguardar" class="loading-div">
+                    <!-- <img src="./assets/circle-loading.gif" id="loading-gif"/> -->
+                </div>
+                <div id="div_erros_login"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do Conteiner de Login -->
+    <!-- Inicio do Footer-->
+    <footer class="footer">
+        <span class="titulos">Onde me encontrar</span>
+        <div class="links-footer">
+            <div class="imgs-footer">
+                <a href="https://www.linkedin.com/in/alexandre-damas-murata/"  target="_blank"><img class="img-icon-footer" src="https://cdn-icons-png.flaticon.com/512/1384/1384014.png" alt="icone do linkedin"/></a>
+                <a href="https://github.com/AlexandreDSptech" target="_blank"><img class="img-icon-footer" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="icone do github"/></a>
+            </div>
+        </div>
+        <span>alexandre.murata@sptech.school</span>
+    </footer>
+    <!-- Fim do Footer -->
+</body>
+</html>
+<script>
+        nome_input.value = "Alexandre"
+        email_input.value = "Alexandre@clube.com"
+        senha_input.value = "123"
+        confirmacao_senha_input.value = "123"
+        cpf_input.value = "43551166897"
+        nasc_input.value = "2003-07-01"
+        lenço_input.value = "C"
+        cargo_input.value = "Instrutor"
+        // clube_input.value = "1"
+        // unidade_input.value = "1"
+        endereço_input.value = "1"
+        lider_input.value = "1"
+    function cadastrarDesbravador() {
+        aguardar();
+        //Recupere o valor da nova input pelo nome do id
+        // Agora vá para o método fetch logo abaixo
+        var nomeVar = nome_input.value;
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+        var confirmacaoSenhaVar = confirmacao_senha_input.value;
+        var cpfVar = cpf_input.value;
+        var nascVar = nasc_input.value;
+        var lençoVar = lenço_input.value;
+        var cargoVar = cargo_input.value;
+        // var clubeVar = clube_input.value;
+        // var unidadeVar = unidade_input.value;
+        var endVar = endereço_input.value;
+        var liderVar = lider_input.value;
+        
+        if (nomeVar == "" || emailVar == "" || senhaVar == "" || confirmacaoSenhaVar == "" || cpfVar == "" || nascVar == "" || endVar == "") {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            finalizarAguardar();
+            return false;
+        }
+        else {
+            setInterval(sumirMensagem, 5000)
+        }
+        // var caractere_especial = ["!", "@", "#", "$", "%", "¨", "&", "*", "(", ")", "£", "¢", "¬", "[", "]", "°", "º", "/", "?", "^", "~", ""];
+        /*
+        if(cpfVar.length != 14){
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(Cpf inválido)";
+            finalizarAguardar();
+            return false;
+        } else if (emailVar.indexOf("@")<0 || emailVar.indexOf(".com")<0){
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(email inválido)";
+            finalizarAguardar();
+            return false;
+        } else if (senhaVar.length <=6 && senhaVar.indexOf("@")<0){
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(senha precisa de pelo menos 7 caracteres)";
+            finalizarAguardar();
+            return false;
+        }
+        */
+        // Enviando o valor da nova input
+        fetch("/usuarios/cadastrarDesbravador", {
+            method: "POST", // Post postar informação, get pega informaçãp, input atualiza informação, delet bom deleta a informação
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                nomeServer: nomeVar,
+                emailServer: emailVar,
+                senhaServer: senhaVar,
+                cpfServer: cpfVar,
+                nascServer: nascVar,
+                lençoServer: lençoVar,
+                cargoServer: cargoVar,
+                // clubeServer: clubeVar,
+                // unidadeServer: unidadeVar,
+                endServer: endVar,
+                liderServer: liderVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML = "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+                setTimeout(() => {
+                    window.location = "login.html";
+                }, "2000")
+                limparFormulario();
+                finalizarAguardar();
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+            finalizarAguardar();
+        });
+
+        return false;
+    }
+
+    function sumirMensagem() {
+        cardErro.style.display = "none"
+    }
+
+</script>

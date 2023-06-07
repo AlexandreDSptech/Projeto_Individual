@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="shortcut icon" href="" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Edição de Aviso</title>
+    <!-- <body onload="validarSessao()"> -->
+    <link rel="stylesheet" href="../css/styleMural.css">
+    <link rel="stylesheet" href="../css/styleEdicaoAviso.css">
+    <script src="../js/funcoes.js"></script>
+    <script src="notificacao.js"></script>
+</head>
+<body onload="validarSessao(), listarInfosDeUm()" style="background-color: #161618;">
+    <div class="janela">
+        <div class="barra-lateral">
+            <span class="titulos">Project Pathfindercization</span>
+            <div class="hello">
+                <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
+            </div>
+            <button class="btn-nav-white click">
+                <a class="trocaPagina" href="DashboardClube.html">
+                    <h3>Unidades</h3>
+                </a>
+            </button>
+            <button class="btn-nav-white click">
+                <a class="trocaPagina" href="./graficos.html">
+                    <h3>Gráficos</h3>
+                </a>
+            </button>
+            <button class="btn-nav click">
+                <a class="trocaPagina" href="mural.html">
+                    <h3>Mural de Avisos</h3>
+                </a>
+            </button>
+            <button class="btn-logout click" onclick="limparSessao()">
+                <h3>Sair</h3>
+            </button>
+        </div>
+        <div class="dash-right">
+            <div id="mensagem_notificacao" class="msn-not">
+                <!-- Mensagem Notificação -->
+            </div>
+            <div class="avisos">
+                <div class="container">
+                    <h1>Editar um aviso</h1>
+                    <div class="div-form">
+                        <br/>
+                        <label class="label-edicao">
+                            Nova descrição (máximo de 300 caracteres):
+                            <br/>
+                            <textarea class="text-area-edit" id="textarea_descricao" maxlength="300" rows="5"></textarea>
+                        </label>
+                        <br/>
+                        <button class="btn-editar" onclick="editar()">Editar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    function listarInfosDeUm() {
+        console.log("Criar função de trazer informações de post escolhido");
+    }
+    function editar() {
+        fetch(`/avisos/editar/${sessionStorage.getItem("ID_POSTAGEM_EDITANDO")}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                descricao: textarea_descricao.value
+            })
+        }).then(function (resposta) {
+            if (resposta.ok) {
+                window.alert("Post atualizado com sucesso pelo usuario de email: " + sessionStorage.getItem("EMAIL_USUARIO") + "!");
+                window.location = "/dashboard/mural.html"
+            } else if (resposta.status == 404) {
+                window.alert("Deu 404!");
+            } else {
+                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+    }
+</script>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Cadastro</title>
+    <script src="./js/funcoes.js"></script>
+    <link rel="stylesheet" href="css/styleCadastro.css">
+</head>
+<body>
+    <!-- Começo do Header -->
+    <header class="header">
+        <span class="titulos">Project Pathfindercization</span>
+        <ul class="BarraSuperior">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sobreMim.html">Sobre Mim</a></li>
+            <li>|</li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="cadastro.html">Cadastrar Desbravador</a></li>
+        </ul>
+    </header>
+    <!-- Fim do Header -->
+    <!-- Começo do Conteiner de Login -->
+    <div class="alerta_erro">
+        <div class="card_erro" id="cardErro">
+            <span id="mensagem_erro"></span>
+        </div>
+    </div>
+    <div class="login clube">
+        <div class="container clube">
+            <div class="card clube">
+                <span class="titulos">Bem Vindo!</span>
+                <div class="formulario clube">
+                    <div class="campo">
+                        <span>Nome:</span>
+                        <input id="nome_input" type="text" placeholder="Seu nome"/>
+                    </div>
+                    <div class="campo">
+                        <span>E-mail:</span>
+                        <input id="email_input" type="text" placeholder="meuemail@provedor.com"/>
+                    </div>
+                    <div class="campo">
+                        <span>Senha:</span>
+                        <input id="senha_input" type="password" placeholder="******"/>
+                    </div>
+                    <div class="campo">
+                        <span>Confirmação da Senha:</span>
+                        <input id="confirmacao_senha_input" type="password" placeholder="******"/>
+                    </div>
+                    <div class="campo">
+                        <span>Data de Fundação</span>
+                        <input id="fund_input" type="date"/>
+                    </div>
+                    <div class="campo">
+                        <span>Região</span>
+                        <input id="regiao_input" type="text" placeholder="Insire a sua região"/>
+                    </div>
+                    <div class="campo">
+                        <span>Associação:</span>
+                        <input id="associacao_input" type="text" placeholder="Seu cargo na Unidade/Clube/Associação"/>
+                    </div>
+                    <div class="campo">
+                        <span>Código do seu Endereço:</span>
+                        <input id="endereço_input" type="text" placeholder="Código do seu Endereço"/>
+                    </div>
+                    <div class="duvida_cadastro">
+                        <span>Já tem uma conta?<a href="login.html">Entrar.</a></span>
+                        <span>Cadastrar desbravador?<a href="cadastro.html">Cadastrar.</a></span>
+                    </div>
+                    <button class="botao" onclick="cadastrarClube()">Cadastrar</button>
+                </div>
+            </div>
+            <div class="card_imagem clube">
+                <img class="imagem_login clube" src="img/img1cortada.jpg" alt="Imagem de um Desbravador"/>
+                <div id="div_aguardar" class="loading-div">
+                    <!-- <img src="./assets/circle-loading.gif" id="loading-gif"/> -->
+                </div>
+                <div id="div_erros_login"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do Conteiner de Login -->
+    <!-- Inicio do Footer-->
+    <footer class="footer">
+        <span class="titulos">Onde me encontrar</span>
+        <div class="links-footer">
+            <div class="imgs-footer">
+                <a href="https://www.linkedin.com/in/alexandre-damas-murata/"  target="_blank"><img class="img-icon-footer" src="https://cdn-icons-png.flaticon.com/512/1384/1384014.png" alt="icone do linkedin"/></a>
+                <a href="https://github.com/AlexandreDSptech" target="_blank"><img class="img-icon-footer" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="icone do github"/></a>
+            </div>
+        </div>
+        <span>alexandre.murata@sptech.school</span>
+    </footer>
+    <!-- Fim do Footer -->
+</body>
+</html>
+<script>
+    nome_input.value = "Alexandre"
+    email_input.value = "Alexandre@clube.com"
+    senha_input.value = "123"
+    confirmacao_senha_input.value = "123"
+    fund_input.value = "2000-01-01"
+    regiao_input.value = "Decima Região"
+    associacao_input.value = "Paulista Sul"
+    endereço_input.value = "1"
+    function cadastrarClube() {
+        aguardar();
+        //Recupere o valor da nova input pelo nome do id
+        // Agora vá para o método fetch logo abaixo
+        var nomeVar = nome_input.value;
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+        var confirmacaoSenhaVar = confirmacao_senha_input.value;
+        var fundVar = fund_input.value;
+        var regiaoVar = regiao_input.value;
+        var associacaoVar = associacao_input.value;
+        var endVar = endereço_input.value;
+        var qtd_desbravadoresVar = 0;
+        var qtd_unidadesVar = 0;
+
+        
+        if (nomeVar == "" || emailVar == "" || senhaVar == "" || confirmacaoSenhaVar == "" || endVar == "") {
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            finalizarAguardar();
+            return false;
+        }
+        else {
+            setInterval(sumirMensagem, 5000)
+        }
+        // var caractere_especial = ["!", "@", "#", "$", "%", "¨", "&", "*", "(", ")", "£", "¢", "¬", "[", "]", "°", "º", "/", "?", "^", "~", ""];
+        /*
+        if(cpfVar.length != 14){
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(Cpf inválido)";
+            finalizarAguardar();
+            return false;
+        } else if (emailVar.indexOf("@")<0 || emailVar.indexOf(".com")<0){
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(email inválido)";
+            finalizarAguardar();
+            return false;
+        } else if (senhaVar.length <=6 && senhaVar.indexOf("@")<0){
+            cardErro.style.display = "block";
+            mensagem_erro.innerHTML = "(senha precisa de pelo menos 7 caracteres)";
+            finalizarAguardar();
+            return false;
+        }
+        */
+        // Enviando o valor da nova input
+        fetch("/usuarios/cadastrarClube", {
+            method: "POST", // Post postar informação, get pega informaçãp, input atualiza informação, delet bom deleta a informação
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                nomeServer: nomeVar,
+                emailServer: emailVar,
+                senhaServer: senhaVar,
+                fundServer: fundVar,
+                regiaoServer: regiaoVar,
+                associacaoServer: associacaoVar,
+                endServer: endVar,
+                qtd_desbravadoresServer: qtd_desbravadoresVar,
+                qtd_unidadesServer: qtd_unidadesVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML = "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+                setTimeout(() => {
+                    window.location = "login.html";
+                }, "2000")
+                limparFormulario();
+                finalizarAguardar();
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+            finalizarAguardar();
+        });
+
+        return false;
+    }
+
+    function sumirMensagem() {
+        cardErro.style.display = "none"
+    }
+</script>

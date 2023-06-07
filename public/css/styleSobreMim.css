@@ -1,0 +1,55 @@
+.home{
+    height: 400px;
+}
+a{
+    color: gold;
+}
+a:hover{
+    border-bottom: 2px solid  rgb(34, 34, 177);
+    /* border-bottom: 2px solid #32b9cd; */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.img{
+    height: 250px;
+    width: 250px;
+    border-radius: 150px;
+    border: 1px solid gray;
+    background-size: cover;
+}
+.sptech{
+    background-image: url("https://pbs.twimg.com/profile_images/1462844108972638209/yBoNz-6Q_400x400.jpg");
+}
+.eu1{
+    background-image: url("../fotos/img3.jpeg");
+}
+.eu2{
+    background-image: url("../fotos/img1.jpeg");
+}
+.eu3{
+    background-image: url("../fotos/img4.jpeg");
+}
+.eu4{
+    background-image: url("../fotos/img2.jpeg");
+}
+.sobreProjeto{
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.box-sobre-projeto{
+    height: 350px;
+    width: 300px;
+    border-radius: 20px;
+    border: 1px solid gray;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.footer{
+    background-image: url(../img/img9.jpg);
+}

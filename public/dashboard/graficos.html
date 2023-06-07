@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Gráficos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../css/styleMural.css">
+    <script src="../js/funcoes.js"></script>
+    <script src="notificacao.js"></script>
+</head>
+<body onload="CarregarDados()">
+    <div class="janela">
+        <div class="barra-lateral">
+            <span class="titulos">Project Pathfindercization</span>
+            <div class="hello">
+                <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
+            </div>
+            <div class="btn-nav-white click">
+                <a class="trocaPagina" href="DashboardClube.html">
+                    <h3>Unidades</h3>
+                </a>
+            </div>
+            <div class="btn-nav-white click">
+                <a class="trocaPagina" href="./graficos.html">
+                    <h3>Gráficos</h3>
+                </a>
+            </div>
+            <div class="btn-nav click">
+                <a class="trocaPagina" href="./mural.html">
+                    <h3>Mural de Avisos</h3>
+                </a>
+            </div>
+            <div class="btn-logout click" onclick="limparSessao()">
+                <h3>Sair</h3>
+            </div>
+        </div>
+        <div class="area-dash-kpi">
+            <div id="mensagem_notificacao" class="msn-not">
+                <!-- Mensagem Notificação -->
+            </div>
+            <div class="LinhasKPI">
+                <div class="box-kpi">
+                    <span class="linha-kpi">Quantidade de Unidades</span>
+                    <span id="mensagem_qtd_unidades" class="titulos">0</span>
+                </div>
+                <div class="box-kpi">
+                    <span class="linha-kpi">Quantidade de Desbravadores</span>
+                    <span id="qtd_desbravadores" class="titulos">0</span>
+                </div>
+            </div>
+            <div class="LinhaGrafico">
+                <div></div>
+                <div class="box-grafico">
+                    <span class="linha-kpi">Quantidade de desbravadores por unidade</span>
+                    <div class="grafico-rosca">
+                        <canvas id="grafico_rosca"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
+    var nome_unidades = [];
+    var cor_unidades = [];
+    var qtd_unidades = [];
+    function CarregarDados() {
+        var fkClubeDadosVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/CarregarDados", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkClubeDadosServer: fkClubeDadosVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    sessionStorage.setItem("QTD_DESBRAVADORES", json[0].qtd_dvb_clu);
+                    // sessionStorage.setItem("QTD_DESBRAVADORES_UNIDADE", json[0].qtd_dvb_uni);
+                    var qtd = json[0].qtd_unidades;
+                    sessionStorage.QTD_UNIDADES = qtd;
+                    for (let i = 0; i < qtd; i++) {
+                        nome_unidades[i] = json[i].nome;
+                        cor_unidades[i] = json[i].cor;
+                        qtd_unidades[i] = json[i].qtd_dvb_uni;
+                    }
+                    // alert(json[0].qtd_dvb_clu)
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    mensagem_qtd_unidades.innerHTML = sessionStorage.QTD_UNIDADES;
+    qtd_desbravadores.innerHTML = sessionStorage.QTD_DESBRAVADORES;
+
+    const chart = new Chart('grafico_rosca', {
+        type: 'doughnut',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Quantidade de desbravadores',
+                data: [], 
+                backgroundColor: [],
+                borderColor: [],
+            }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+        }
+    });
+    var qtdDvbClu = sessionStorage.QTD_DESBRAVADORES;
+    function AtualizarGrafico() {
+        const datasets = chart.data.datasets;
+        var contador = 0;
+        var total_unidade = 0;
+        while (contador < qtd_unidades.length) {
+            total_unidade += qtd_unidades[contador];
+            contador++;
+        }
+        for (var i = 0; i < datasets.length; i++) {
+            chart.data.labels = nome_unidades;
+            datasets[i].backgroundColor = cor_unidades;
+            datasets[i].borderColor = cor_unidades;
+            datasets[i].data = qtd_unidades;
+        }   
+        var limite = (chart.data.labels.length);
+        if (qtdDvbClu - total_unidade != 0) {
+            chart.data.labels[limite] = "Sem Unidade";
+            datasets[i - 1].backgroundColor[limite] = 'black';
+            datasets[i - 1].borderColor[limite] = 'black';
+            datasets[i - 1].data[limite] = qtdDvbClu - total_unidade;
+        }
+        chart.update();
+    }
+    setTimeout(AtualizarGrafico, 100);
+    setInterval(Teste,1000)
+    function Teste() {
+        chart.update();
+    }
+    // var nome_unidade = JSON.parse(sessionStorage.getItem('ARRAYUNIDADES')); // Recupera o valor da sessionStorage e converte de volta para um array
+    // var nome_desbravador = JSON.parse(sessionStorage.getItem('ARRAYUNIDARRAYDESBRAVADORESADES')); // Recupera o valor da sessionStorage e converte de volta para um array
+    // alert(nome_unidade)
+</script>

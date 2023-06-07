@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Gráficos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../css/styleMural.css">
+    <script src="../js/funcoes.js"></script>
+    <script src="notificacao.js"></script>
+</head>
+<body onload="CarregarKPIClasse(), CarregarKPIEspecialidade(), CarregarGrafico()">
+    <div class="janela">
+        <div class="barra-lateral">
+            <span class="titulos">Project Pathfindercization</span>
+            <div class="hello">
+                <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
+            </div>
+            <div class="btn-nav-white click">
+                <a class="trocaPagina" href="dashboardDesbravador.html">
+                    <h3>Classes/Especialidades</h3>
+                </a>
+            </div>
+            <div class="btn-nav-white click">
+                <a class="trocaPagina" href="graficosDesbravador.html">
+                    <h3>Gráficos</h3>
+                </a>
+            </div>
+            <div class="btn-nav click">
+                <a class="trocaPagina" href="mural.html">
+                    <h3>Mural de Avisos</h3>
+                </a>
+            </div>
+            <div class="btn-logout click" onclick="limparSessao()">
+                <h3>Sair</h3>
+            </div>
+        </div>
+        <div class="area-dash-kpi">
+            <div id="mensagem_notificacao" class="msn-not">
+                <!-- Mensagem Notificação -->
+            </div>
+            <div class="LinhasKPI">
+                <div class="box-kpi">
+                    <span class="linha-kpi">Quantidade de Classes</span>
+                    <span id="mensagem_qtd_classes" class="titulos">0</span>
+                </div>
+                <div class="box-kpi">
+                    <span class="linha-kpi">Quantidade de Especialidades</span>
+                    <span id="mensagem_qtd_especialidades" class="titulos">0</span>
+                </div>
+            </div>
+            <div class="LinhaGrafico">
+                <div></div>
+                <div class="box-grafico">
+                    <span class="linha-kpi">Quantidade de Especialidades por categoria</span>
+                    <div class="grafico-rosca grafico-especialidade">
+                        <canvas id="grafico_rosca"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
+    function CarregarKPIClasse() {
+        var fkDesbravadorVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/CarregarKPIClasse", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDesbravadorServer: fkDesbravadorVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    mensagem_qtd_classes.innerHTML = json[0].totalClasse;
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function CarregarKPIEspecialidade() {
+        var fkDesbravadorVar = sessionStorage.ID_DESBRAVADOR;
+        fetch("/dashdvb/CarregarKPIEspecialidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkDesbravadorServer: fkDesbravadorVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    mensagem_qtd_especialidades.innerHTML = json[0].totalEspecialidade;
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var categoria_especialidade = ['ADRA', 'Artes e Habilidades Manuais', 'Atividades Agrícolas', 'Missionárias e Comunitárias','Atividades Profissionais','Atividades Recreativas','Ciência e Saúde','Estudos da Natureza','Habilidades Domésticas','Mestrados']
+    var quantidadePorCategoria = [];
+    var cor_categoria = ['#660066','cyan','#996633','blue','red','greenyellow','purple','white','gold','black']
+    function CarregarGrafico() {
+        var fkDesbravadorVar = sessionStorage.ID_DESBRAVADOR;
+        var promises = []; // Array para armazenar as promessas das requisições
+        for (let contador = 0; contador < categoria_especialidade.length; contador++) {
+            var categoriaVar = categoria_especialidade[contador];
+            var promise = fetch("/dashdvb/CarregarGrafico", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    fkDesbravadorServer: fkDesbravadorVar,
+                    categoriaServer: categoriaVar
+                })
+            }).then(function (resposta) {
+                console.log("resposta: ", resposta);
+                if (resposta.ok) {
+                    return resposta.json();
+                } else {
+                    throw new Error("Houve um erro ao tentar buscar os dados!");
+                }
+            }).catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+            });
+            promises.push(promise); // Adicionar a promessa ao array
+        }
+        // Esperar todas as promessas serem resolvidas
+        Promise.all(promises).then(function (results) {
+            quantidadePorCategoria = results.map(function (json) {
+                var qtd = json[0].quantidade;
+                return qtd;
+            });
+            AtualizarGrafico();
+        });
+    }
+    const chart = new Chart('grafico_rosca', {
+        type: 'doughnut',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Quantidade de especialidades por categoria',
+                data: [],
+                backgroundColor: [],
+                borderColor: [],
+            }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+        }
+    });
+    function AtualizarGrafico() {
+        chart.data.labels = categoria_especialidade;
+        const datasets = chart.data.datasets;
+        datasets[0].data = quantidadePorCategoria;
+        datasets[0].backgroundColor = cor_categoria;
+        datasets[0].borderColor = cor_categoria;
+        chart.update();
+    }
+    setTimeout(AtualizarGrafico, 100);
+    setInterval(Teste,1000)
+    function Teste() {
+        chart.update();
+    }
+</script>

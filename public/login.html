@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Login</title>
+    <script src="./js/funcoes.js"></script>
+    <link rel="icon" href="">
+    <link rel="stylesheet" href="css/styleLogin.css">
+</head>
+<body>
+    <!-- Começo do Header -->
+    <header class="header">
+        <span class="titulos">Project Pathfindercization</span>
+        <ul class="BarraSuperior">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sobreMim.html">Sobre Mim</a></li>
+            <li>|</li>
+            <li><a href="cadastroClube.html">Cadastrar Clube</a></li>
+            <li><a href="cadastro.html">Cadastrar Desbravador</a></li>
+        </ul>
+    </header>
+    <!-- Fim do Header -->
+    <!-- Começo do Conteiner de Login -->
+    <div class="alerta_erro">
+        <div class="card_erro" id="cardErro">
+            <span id="mensagem_erro"></span>
+        </div>
+    </div>
+    <div class="login">
+        <div class="container">
+            <div class="card_imagem">
+                <img class="imagem_login" src="img/img14.jpg" alt="Imagem de um Desbravador"/>
+            </div>
+            <div class="card">
+                <span class="titulos">Olá de volta!</span>
+                <div class="formulario">
+                    <div class="campo">
+                        <span>E-mail:</span>
+                        <input id="email_input" type="text" placeholder="Login"/>
+                    </div>
+                    <div class="campo">
+                        <span>Senha:</span>
+                        <input id="senha_input" type="password" placeholder="******"/>
+                    </div>
+                    <button class="botao" onclick="entrarDesbravador()">Entrar Desbravador</button>
+                    <button class="botao" onclick="entrarClbue()">Entrar Clube</button>
+                </div>
+                <div id="div_aguardar" class="loading-div">
+                    <!-- <img src="./assets/circle-loading.gif" id="loading-gif"> -->
+                </div>
+                <div id="div_erros_login"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do Conteiner de Login -->
+    <!-- Inicio do Footer-->
+    <footer class="footer">
+            <span class="titulos">Onde me encontrar</span>
+            <div class="links-footer">
+                <div class="imgs-footer">
+                    <a href="https://www.linkedin.com/in/alexandre-damas-murata/"  target="_blank"><img class="img-icon-footer" src="https://cdn-icons-png.flaticon.com/512/1384/1384014.png" alt="icone do linkedin"/></a>
+                    <a href="https://github.com/AlexandreDSptech" target="_blank"><img class="img-icon-footer" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="icone do github"/></a>
+                </div>
+            </div>
+            <span>alexandre.murata@sptech.school</span>
+    </footer>
+    <!-- Fim do Footer -->
+</body>
+</html>
+<script>
+    function entrarDesbravador() {
+        aguardar();
+
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+
+        if (emailVar == "" || senhaVar == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            finalizarAguardar();
+            return false;
+        }
+        else {
+            setInterval(sumirMensagem, 5000)
+        }
+
+        console.log("FORM LOGIN: ", emailVar);
+        console.log("FORM SENHA: ", senhaVar);
+
+        fetch("/usuarios/autenticarDesbravador", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_DESBRAVADOR = json.idDesbravador;
+                    sessionStorage.ID_CLUBE = json.fkClubeDvb;
+                    sessionStorage.FK_END = json.fkEndDvb;
+                    sessionStorage.NÍVEL_LENÇO = json.Nível_Lenço;
+                    sessionStorage.CONVITE = json.convite;
+                    sessionStorage.DTNASC = new Date(json.dtNasc).toLocaleDateString("pt-br");
+
+                    setTimeout(function () {
+                        window.location = "./dashboard/mural.html";
+                    }, 1000); // apenas para exibir o loading
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+                resposta.text().then(texto => {
+                    console.error(texto);
+                    finalizarAguardar(texto);
+                });
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+
+        return false;
+    }
+
+    function entrarClbue() {
+        aguardar();
+
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+
+        if (emailVar == "" || senhaVar == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            finalizarAguardar();
+            return false;
+        }
+        else {
+            setInterval(sumirMensagem, 5000)
+        }
+
+        console.log("FORM LOGIN: ", emailVar);
+        console.log("FORM SENHA: ", senhaVar);
+
+        fetch("/usuarios/autenticarClube", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_CLUBE = json.idClube;
+                    sessionStorage.ID_DESBRAVADOR = 0;
+                    sessionStorage.QTD_DESBRAVADORES = json.qtd_desbravadores;
+                    sessionStorage.QTD_UNIDADES = json.qtd_unidades;
+                    sessionStorage.FK_END = json.fkEndClube;
+
+                    setTimeout(function () {
+                        window.location = "./dashboard/mural.html";
+                    }, 1000); // apenas para exibir o loading
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+                resposta.text().then(texto => {
+                    console.error(texto);
+                    finalizarAguardar(texto);
+                });
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+
+        return false;
+    }
+
+    function sumirMensagem() {
+        cardErro.style.display = "none"
+    }
+</script>

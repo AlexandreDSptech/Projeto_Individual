@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfindercization | Dashboard</title>
+    <link rel="stylesheet" href="../css/styleMural.css">
+    <script src="../js/funcoes.js"></script>
+    <script src="notificacao.js"></script>
+</head>
+<body onload="CarregarDesbravador(), CarregarClube()">
+    <div class="janela">
+        <div class="barra-lateral">
+            <span class="titulos">Project Pathfindercization</span>
+            <div class="hello">
+                <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
+            </div>
+            <div class="btn-nav-white click">
+                <a class="trocaPagina" href="DashboardClube.html">
+                    <h3>Unidades</h3>
+                </a>
+            </div>
+            <div class="btn-nav-white click">
+                <a class="trocaPagina" href="./graficos.html">
+                    <h3>Gráficos</h3>
+                </a>
+            </div>
+            <div class="btn-nav click">
+                <a class="trocaPagina" href="./mural.html">
+                    <h3>Mural de Avisos</h3>
+                </a>
+            </div>
+            <div class="btn-logout click" onclick="limparSessao()">
+                <h3>Sair</h3>
+            </div>
+        </div>
+        <div class="area-dash">
+            <div id="mensagem_notificacao" class="msn-not">
+                <!-- Mensagem Notificação -->
+            </div>
+            <div id="mostra_unidades">
+                <!-- Aqui mostra as Unidades -->
+            </div>
+            <div id="criar_input">
+                <button class="btn_actions" onclick="Chamar()">
+                    Nova Unidade
+                </button>
+                <button class="btn_actions" onclick="ChamarUpdate()">
+                    Mudar nome de Unidade
+                </button>
+                <button class="btn_actions" onclick="ChamarConvite()">
+                    Convidar um Desbravador
+                </button>
+                <button class="btn_actions" onclick="ChamarDelete()">
+                    Deletar uma Unidade
+                </button>
+                <button class="btn_actions" onclick="ChamarMoverDvb()">
+                    Mover um desbravador de Unidade
+                </button>
+                <button class="btn_actions" onclick="ChamarInformacoes()">
+                    Ver informações de um desbravador
+                </button>
+            </div>
+            <div id="mensagem_informacao" class="div-info">
+                <!-- Mostra as Informações dos Desbravadores  -->
+            </div>
+            <div id="listar_desbravadores">
+                <table cellspacing="0" border="1" class="table_lista" id="mensagem_table_lista">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Unidade</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
+    // function allowDrop(ev) {
+    //     ev.preventDefault();
+    // }
+    // function drag(ev) {
+    //     ev.dataTransfer.setData("text", ev.target.id);
+    // }
+    // function drop(ev) {
+    //     ev.preventDefault();
+    //     var data = ev.dataTransfer.getData("text");
+    //     ev.target.appendChild(document.getElementById(data));
+    // }
+    function Voltar() {
+        criar_input.innerHTML = `
+            <button class="btn_actions" onclick="Chamar()">
+                Nova Unidade
+            </button>
+            <button class="btn_actions" onclick="ChamarUpdate()">
+                Mudar nome de Unidade
+            </button>
+            <button class="btn_actions" onclick="ChamarConvite()">
+                Convidar um Desbravador
+            </button>
+            <button class="btn_actions" onclick="ChamarDelete()">
+                Deletar uma Unidade
+            </button>
+            <button class="btn_actions" onclick="ChamarMoverDvb()">
+                Mover um desbravador de Unidade
+            </button>
+            <button class="btn_actions" onclick="ChamarInformacoes()">
+                Ver informações de um desbravador
+            </button>
+        `;
+    }
+    function Chamar() {
+        criar_input.innerHTML = `
+            <span>Nome da nova Unidade:</span><input type="text" id="input_nova_unidade"/>
+            <span>Cor da nova Unidade:</span><input type="color" id="input_nova_unidade_cor"/>
+            <button class="btn_actions" onclick="cadastrarUnidade()">
+                Cadastrar
+            </button>
+            <button class="btn_actions" onclick="Voltar()">
+                Voltar
+            </button>
+        `
+    }
+    function ChamarUpdate() {
+        criar_input.innerHTML = `
+        <span>Trocar nome da Unidade:</span><input type="text" id="input_mudar_unidade1"/></br>
+        <span>Nome novo:</span><input type="text" id="input_mudar_unidade2"/>
+        <span>Cor nova:</span><input type="color" id="input_mudar_unidade3"/>
+        <button class="btn_actions" onclick="mudarUnidade()">
+            Atualizar
+        </button>
+        <button class="btn_actions" onclick="Voltar()">
+                Voltar
+        </button>
+        `
+    }
+    function ChamarConvite() {
+        criar_input.innerHTML = `
+            <span>Email do Desbravador:</span><input type="text" id="input_email"/></br>
+            <button class="btn_actions" onclick="convidarDesbravador()">
+                Convidar
+            </button>
+            <button class="btn_actions" onclick="Voltar()">
+                Voltar
+            </button>
+        `
+    }
+    function ChamarDelete() {
+        criar_input.innerHTML = `
+            <span>Nome da Unidade:</span><input type="text" id="input_nome_delete"/></br>
+            <button class="btn_actions" onclick="deletarUnidade()">
+                Deletar
+            </button>
+            <button class="btn_actions" onclick="Voltar()">
+                Voltar
+            </button>
+        `
+    }
+    function ChamarMoverDvb() {
+        criar_input.innerHTML = `
+            <span>Nome do Desbravador:</span><input type="text" id="input_mover_desbravador"/></br>
+            <span>Unidade para qual quer mover:</span><input type="text" id="input_mover_unidade"/></br>
+            <button class="btn_actions" onclick="buscarUnidade()">
+                Mover Desbravador
+            </button>
+            <button class="btn_actions" onclick="Voltar()">
+                Voltar
+            </button>
+        `
+    }
+    function ChamarInformacoes() {
+        criar_input.innerHTML = `
+            <span>Nome do Desbravador:</span><input type="text" id="input_informacao_desbravador"/></br>
+            <button class="btn_actions" onclick="informacaoDesbravador()">
+                Ver informações
+            </button>
+            <button class="btn_actions" onclick="Voltar()">
+                Voltar
+            </button>
+        `
+    }
+    function cadastrarUnidade() {
+        var nomeVar = input_nova_unidade.value;
+        var corVar = input_nova_unidade_cor.value;
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+
+        fetch("/dashclube/cadastrarUnidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeVar,
+                corServer: corVar,
+                fkClubeServer: fkClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                setTimeout(() => {
+                    window.location = "DashboardClube.html";
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function mudarUnidade() {
+        var nomeVar1 = input_mudar_unidade1.value;
+        var nomeVar2 = input_mudar_unidade2.value;
+        var corVar = input_mudar_unidade3.value;
+        var fkClubeMVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/mudarUnidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer1: nomeVar1,
+                nomeServer2: nomeVar2,
+                corServer: corVar,
+                fkClubeMServer: fkClubeMVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                setTimeout(() => {
+                    window.location = "DashboardClube.html";
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function convidarDesbravador() {
+        var emailVar = input_email.value;
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+
+        fetch("/dashclube/convidarDesbravador", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                fkClubeServer: fkClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                setTimeout(() => {
+                    window.location = "DashboardClube.html";
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function deletarUnidade() {
+        var nomeVar = input_nome_delete.value;
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+
+        if (qtdArray[nomeArray.indexOf(nomeVar)] > 0) {
+            alert('Existem desbravadores nessa unidade!')
+        } else {
+            fetch("/dashclube/deletarUnidade", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nomeServer: nomeVar,
+                    fkClubeServer: fkClubeVar
+                })
+            }).then(function (resposta) {
+                console.log("resposta: ", resposta);
+                if (resposta.ok) {
+                    setTimeout(() => {
+                        window.location = "DashboardClube.html";
+                    }, "2000")
+                } else {
+                    throw ("Houve um erro ao tentar realizar o cadastro!");
+                }
+            }).catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+            });
+            return false;
+        }
+    }
+    var nomeMoverDesbravadorVar = "";
+    var fkBuscarUnidade = 0;
+    function buscarUnidade() { // busca id da Unidade para qual quer ir
+        nomeMoverDesbravadorVar = input_mover_desbravador.value;
+        var nomeUnidadeVar = input_mover_unidade.value;
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/buscarUnidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeUnidadeServer: nomeUnidadeVar,
+                fkClubeServer: fkClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                setTimeout(() => {
+                    resposta.json().then(json => {
+                        console.log(json);
+                        console.log("TESTE: " + JSON.stringify(json));
+                        fkBuscarUnidade = json[0].idUnidade;
+                        buscarUnidadeAtual();
+                    });
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var unidadeAtual = 0;
+    function buscarUnidadeAtual() {// busca id da Unidade atual
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/buscarUnidadeAtual", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeMoverDesbravadorServer: nomeMoverDesbravadorVar,
+                fkClubeServer: fkClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                setTimeout(() => {
+                    resposta.json().then(json => {
+                        console.log(json);
+                        console.log("TESTE: " + JSON.stringify(json));
+                        unidadeAtual = json[0].fkUnidade;
+                        moverDesbravador();
+                    });
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function moverDesbravador() {
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/moverDesbravador", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeDesbravadorServer: nomeMoverDesbravadorVar,
+                fkUnidadeServer: fkBuscarUnidade,
+                fkClubeServer: fkClubeVar,
+                idUnidadeAtual: unidadeAtual
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                setTimeout(() => {
+                    window.location = "DashboardClube.html";
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    function informacaoDesbravador() {
+        var nomeVar = input_informacao_desbravador.value;
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/informacaoDesbravador", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeVar,
+                fkClubeServer: fkClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                setTimeout(() => {
+                    resposta.json().then(json => {
+                        console.log(json);
+                        console.log("TESTE: " + JSON.stringify(json));
+                        var nomeInfo = json[0].nome;
+                        var emailInfo = json[0].email;
+                        var cpfInfo = json[0].cpf;
+                        var dtNascInfo = json[0].dtNasc;
+                        var hora = new Date(dtNascInfo).toLocaleDateString("pt-br")
+                        mensagem_informacao.innerHTML = `
+                        <span>Nome: ${nomeInfo}</span><br/>
+                        <span>Email: ${emailInfo}</span><br/>
+                        <span>Cpf: ${cpfInfo}</span><br/>
+                        <span>Data de Nascimento: ${hora}</span><br/>
+                        `
+                    });
+                }, "2000")
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    var nome_unidade = [];
+    var nome_desbravador = [];
+    function CarregarDesbravador() {
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/CarregarDesbravador", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkClubeServer: fkClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+
+                    for (let i = 0; i < json.length; i++) {
+                        var Unidade = json[i].nomeUnidade;
+                        var Nome = json[i].nome;
+                        if (Unidade == null || Unidade == 'null' || Unidade == 0) {
+                            Unidade = "Sem Unidade";
+                        }
+                        mensagem_table_lista.innerHTML += `
+                            <tr>
+                                <td>${Nome}</th>
+                                <td>${Unidade}</th>
+                            </tr>
+                        `
+                        nome_unidade.push(Unidade)
+                        nome_desbravador.push(Nome)
+                    }
+                    // sessionStorage.setItem('ARRAYUNIDADES', JSON.stringify(nome_unidade)); // Armazena o array como uma string JSON
+                    // sessionStorage.setItem('ARRAYDESBRAVADORES', JSON.stringify(nome_desbravador)); // Armazena o array como uma string JSON
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    // var numBtn = [];
+    // var cont = 0;
+    var nomeArray = [];
+    var qtdArray = [];
+    function CarregarUnidade() {
+        var fkClubeVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/carregarUnidade", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkClubeServer: fkClubeVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                console.log(resposta);
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+                    var total = 0;
+                    for (var i = 0; i < json.length; i++) { // cria linhas
+                        var quantidade = json[i].qtd_desbravadores;
+                        var nome = json[i].nome;
+                        nomeArray.push(nome);
+                        qtdArray.push(quantidade);
+                        mostra_unidades.innerHTML += `
+                            <span class="titulos branco">${nome}</span>
+                            <span class="titulos branco"> | </span>
+                            <span class="titulos branco direita">${quantidade} desbravadores</span>
+                            <div id="linha_unidade${i}" class="linha"></div>
+                        `;
+                        //ondrop="drop(event)" ondragover="allowDrop(event)"
+                        var linha_unidade = document.getElementById(`linha_unidade${i}`);
+                        for (var cont = 0; cont < nome_unidade.length; cont++) { // cria os botões
+                            if (nome_unidade[cont] == nome) {
+                                const botao = document.createElement('button');
+                                botao.textContent = `${nome_desbravador[cont]}`;
+                                botao.id = `botao-${cont}`; // atribui um id único para cada botão
+                                // botao.setAttribute('draggable', 'true');
+                                // botao.setAttribute('ondragstart', 'drag(event)');
+                                botao.addEventListener('click', function() {
+                                    const idBotao = this.id; // obtém o id do botão clicado
+                                    const numeroBotao = idBotao.split('-')[1]; // extrai o número do id
+                                    alert(`Botão ${numeroBotao} foi clicado.`);
+                                });
+                                // numBtn.push(cont);
+                                linha_unidade.appendChild(botao); // adiciona o botão ao corpo do documento
+                            }
+                        }
+                        total += quantidade;
+                    }
+                    var numDvb = sessionStorage.QTD_DESBRAVADORES;
+                    if (numDvb - total != 0) {
+                        nome = "Sem Unidade";
+                        // nome_unidade.push(nome);
+                        mostra_unidades.innerHTML += `
+                            <span class="titulos branco">${nome}</span>
+                            <span class="titulos branco"> | </span>
+                            <span class="titulos branco direita">${numDvb - total} desbravadores</span>
+                            <div id="linha_unidade${i}" class="linha" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        `
+                        var linha_unidade = document.getElementById(`linha_unidade${i}`);
+                        for (var j = 0; j < nome_desbravador.length; j++) {
+                            // alert(nome_unidade[j])
+                            if (nome_unidade[j] == nome) {
+                                // alert(linha_unidade)
+                                // linha_unidade.innerHTML += nome_desbravador[i];
+                                // alert(nome_desbravador[j])
+                                linha_unidade.innerHTML += `<button onclick="VerDados()" id="btnDvb${cont}" draggable="true" ondragstart="drag(event)">${nome_desbravador[j]}</button>`;
+                                // numBtn.push(cont);
+                                cont++;
+                            }
+                        }
+                    } 
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    // function criarBotoes() {
+    //     // const quantidadeBotoes = 5; // quantidade de botões a serem criados
+
+    //     for (let i = 0; i < cont; i++) {
+    //         const botao = document.createElement('button');
+    //         botao.textContent = `Botão ${i+1}`;
+    //         botao.id = `botao-${i}`; // atribui um id único para cada botão
+    //         botao.addEventListener('click', function() {
+    //             const idBotao = this.id; // obtém o id do botão clicado
+    //             const numeroBotao = idBotao.split('-')[1]; // extrai o número do id
+    //             alert(`Botão ${numeroBotao} foi clicado.`);
+    //         });
+    //         document.body.appendChild(botao); // adiciona o botão ao corpo do documento
+    //     }
+    // }
+//     function VerDados() {
+//         for (let x = 0; x <= cont; x++) {
+//             if (numBtn.indexOf(x) >= 0) {
+//                 var btnDvb = document.getElementById(`btnDvb${x}`);
+
+//                 // Remove o event listener anterior (se existir)
+//                 btnDvb.removeEventListener('click', Teste);
+
+//                 // Adiciona o novo event listener
+//                 btnDvb.addEventListener('click', Teste);
+//             }
+//         }
+// }       
+// function Teste() {
+// //   const num = event.target.id.slice(-1);
+//     alert('ola');
+// }
+    // function CarregarUnidade() {
+    //     fetch(`/dashclube/carregarUnidade`)
+    //         .then(resposta => {
+
+    //             if (resposta.ok) {
+    //                 resposta.json().then(resposta => {
+    //                     console.log(resposta)
+
+    //                 });
+    //             } else {
+
+    //                 console.error('Nenhum dado encontrado ou erro na API');
+    //             }
+    //         })
+    //         .catch(function (error) {
+    //             console.error(`Erro na obtenção dos dados do aquario p/ gráfico: ${error.message}`);
+    //         });
+    // }
+    function CarregarClube() {
+        var fkClubeDadosVar = sessionStorage.ID_CLUBE;
+        fetch("/dashclube/carregarClube", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fkClubeDadosServer: fkClubeDadosVar
+            })
+        }).then(function (resposta) {
+            console.log("resposta: ", resposta);
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log("TESTE: " + JSON.stringify(json));
+                    sessionStorage.setItem("QTD_DESBRAVADORES", json[0].qtd_desbravadores)
+                    sessionStorage.QTD_UNIDADES = json[0].qtd_unidades;
+                });
+            } else {
+                throw ("Houve um erro ao tentar buscar os dados!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+        return false;
+    }
+    setTimeout(CarregarUnidade, 100);
+</script>
