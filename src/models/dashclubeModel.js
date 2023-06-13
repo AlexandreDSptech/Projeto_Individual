@@ -17,11 +17,11 @@ function cadastrarUnidade(nome, cor, fkClube) {
 function mudarUnidade(nome1, nome2, cor, fkClubeM) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome1, nome2, fkClubeM);
     
-    var instrucao = `
-        UPDATE Unidade SET nome = "${nome2}" WHERE fkClube = ${fkClubeM} AND nome = "${nome1}";
-    `;
     var instrucao2 = `
         UPDATE Unidade SET cor = "${cor}" WHERE fkClube = ${fkClubeM} AND nome = "${nome1}";
+    `;
+    var instrucao = `
+        UPDATE Unidade SET nome = "${nome2}" WHERE fkClube = ${fkClubeM} AND nome = "${nome1}";
     `;
     console.log("Executando a instrução SQL: \n" + instrucao);
     database.executar(instrucao2);
